@@ -58,10 +58,49 @@ Each challenge is implemented as a standalone MCP server in its respective direc
 Claude Desktop is a desktop application that allows you to interact with Claude and connect to MCP servers. You can download it from the Anthropic website.
 
 To connect to a challenge server:
-1. Open Claude Desktop
-2. Click on the "Connect to MCP Server" option
-3. Enter the server URL (e.g., http://localhost:8001)
-4. Start interacting with the server through Claude
+1. Open **Claude Desktop**.
+2. Go to `File → Settings... → Developer (Tab) → Edit Config`.
+3. This will open the `claude_desktop_config.json` file.
+4. Add your MCP server configuration like this:
+
+```json
+{
+  "mcpServers": {
+    "Challenge 1": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://127.0.0.1:9001/sse"
+      ]
+    },
+    "Challenge 2": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://127.0.0.1:9002/sse"
+      ]
+    },
+
+    [...]
+    
+    "Challenge 9": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://127.0.0.1:9010/sse"
+      ]
+    }
+  }
+}
+```
+
+5. Save the file and restart Claude Desktop.
+
+
+#### Verifying the Connection
+
+After restarting Claude, you should see a popup listing the available MCP tools provided by the configured servers.
+
 
 ### MCP Inspector
 
