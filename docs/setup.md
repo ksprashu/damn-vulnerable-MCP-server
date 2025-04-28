@@ -6,6 +6,7 @@ This guide provides instructions for setting up and running the Damn Vulnerable 
 
 - Python 3.10 or higher
 - pip (Python package installer)
+- node (Needed for running remote MCP server)
 - A Model Context Protocol (MCP) client (e.g., Claude Desktop or MCP Inspector)
 
 ## Installation
@@ -56,6 +57,27 @@ Each challenge is implemented as a standalone MCP server in its respective direc
 ### Claude Desktop
 
 Claude Desktop is a desktop application that allows you to interact with Claude and connect to MCP servers. You can download it from the Anthropic website.
+
+Before changing the config file, make sure you have node installed. This prevents issues in Claude Desktop connecting to the remote MCP challenge servers.
+
+**Mac Installation (in Terminal):**
+```
+   % brew install node
+   % brew link node
+```
+
+**Windows Installation:** 
+
+Navigate to https://nodejs.org/en/download and download the setup file for your system.
+
+**Linux Installation (in Terminal):**
+
+```
+   sudo apt update
+   sudo apt upgrade
+   sudo apt install nodejs
+   sudo apt install npm [OPTIONALLY, IF NOT ALREADY INSTALLED WITH PREVIOUS COMMAND]
+```
 
 To connect to a challenge server:
 1. Open **Claude Desktop**.
