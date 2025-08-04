@@ -85,11 +85,16 @@ class Challenge6Server:
     def run(self):
         """Run the server with uvicorn"""
         import uvicorn
+        import os
+        # Use the PORT environment variable provided by Cloud Run, default to self.port for local running
+        port = int(os.environ.get("PORT", self.port))
+        host = "0.0.0.0"
+
         print(f"Starting {self.name} MCP Server")
         print("Connect to this server using an MCP client (e.g., Claude Desktop or Cursor)")
-        print(f"Server running at http://localhost:{self.port}")
-        print(f"SSE endpoint available at http://localhost:{self.port}/sse")
-        uvicorn.run(self.app, host="0.0.0.0", port=self.port)
+        print(f"Server running at http://{host}:{port}")
+        print(f"SSE endpoint available at http://{host}:{port}/sse")
+        uvicorn.run(self.app, host=host, port=port)
 
 # Run the server
 if __name__ == "__main__":

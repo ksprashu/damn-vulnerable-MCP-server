@@ -23,8 +23,84 @@ refer this https://docs.cline.bot/mcp-servers/connecting-to-a-remote-server for 
 once you have cloned the repository, run the following commands:
 
 docker build -t dvmcp .
-docker run -p 9001-9010:9001-9010 dvmcp
+docker run -p 8001-8010:8001-8010 dvmcp
 ```
+
+## Local Development
+
+For local development, you can run the challenges without Docker.
+
+1.  **Create a virtual environment:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Run a specific challenge:**
+    ```bash
+    ./run.sh <challenge_name>
+    ```
+    For example, to run `challenge1`:
+    ```bash
+    ./run.sh challenge1
+    ```
+
+## Google Cloud Run Deployment
+
+This project can be deployed to Google Cloud Run, with each challenge running as a separate service. This allows for a scalable and managed deployment.
+
+### Architecture
+
+The deployment strategy uses a single, generic Docker image for all challenges. The specific challenge to run is determined at runtime by passing an argument to the container. Each of the 10 challenges is deployed as a separate Cloud Run service, each with its own unique URL.
+
+### Prerequisites
+
+- A Google Cloud Platform project must be created.
+- The Cloud Build, Cloud Run, and Container Registry APIs must be enabled in the GCP project.
+- The `gcloud` command-line tool must be installed and authenticated with permissions to the project.
+
+### Deployment Steps
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/ksprashu/damn-vulnerable-mcp-server.git
+    cd damn-vulnerable-mcp-server
+    ```
+
+2.  **Set your GCP project ID:**
+    ```bash
+    gcloud config set project [YOUR_PROJECT_ID]
+    ```
+
+3.  **Run the deployment script:**
+    ```bash
+    chmod +x cloud_run_deploy.sh
+    ./cloud_run_deploy.sh
+    ```
+
+The script will first build the Docker image using Google Cloud Build and then deploy all 10 challenge services to Cloud Run.
+
+### Service URLs
+
+Once deployed, the services will be available at the following URLs (replace `[PROJECT_ID]` and `[REGION]` with your actual project ID and region):
+
+- `dvmcp-challenge1-prompt-injection`: `https://dvmcp-challenge1-prompt-injection-....run.app`
+- `dvmcp-challenge2-tool-poisoning`: `https://dvmcp-challenge2-tool-poisoning-....run.app`
+- `dvmcp-challenge3-excessive-permissions`: `https://dvmcp-challenge3-excessive-permissions-....run.app`
+- `dvmcp-challenge4-rug-pull-attack`: `https://dvmcp-challenge4-rug-pull-attack-....run.app`
+- `dvmcp-challenge5-tool-shadowing`: `https://dvmcp-challenge5-tool-shadowing-....run.app`
+- `dvmcp-challenge6-indirect-prompt-injection`: `https://dvmcp-challenge6-indirect-prompt-injection-....run.app`
+- `dvmcp-challenge7-token-theft`: `https://dvmcp-challenge7-token-theft-....run.app`
+- `dvmcp-challenge8-malicious-code-execution`: `https://dvmcp-challenge8-malicious-code-execution-....run.app`
+- `dvmcp-challenge9-remote-access-control`: `https://dvmcp-challenge9-remote-access-control-....run.app`
+- `dvmcp-challenge10-multi-vector-attack`: `https://dvmcp-challenge10-multi-vector-attack-....run.app`
+
+You can get the exact URLs by running `gcloud run services list --platform managed`.
 
 ## disclaimer
 its not stable in windows environment if you don't want to docker please use linux environment 
@@ -50,7 +126,12 @@ While MCP provides many benefits, it also introduces new security considerations
 ```
 damn-vulnerable-mcs/
 ├── README.md                 # Project overview
+├── pyproject.toml            # Project dependencies and metadata
 ├── requirements.txt          # Python dependencies
+├── Dockerfile                # Dockerfile for building the application
+├── supervisord.conf          # Supervisor configuration for managing services
+├── cloud_run_deploy.sh       # Deployment script for Google Cloud Run
+├── run.sh                    # Script to run the application locally
 ├── challenges/               # Challenge implementations
 │   ├── easy/                 # Easy difficulty challenges (1-3)
 │   │   ├── challenge1/       # Basic Prompt Injection
@@ -108,6 +189,15 @@ Solution guides are provided for educational purposes. It's recommended to attem
 
 See the [Solutions Guide](solutions/README.md) for detailed solutions to each challenge.
 
+## Note on `server.py` and `server_sse.py`
+
+In each challenge directory, you will find two server files: `server.py` and `server_sse.py`.
+
+-   `server.py`: This is the original implementation of the challenge server. It is not fully functional and does not support Server-Sent Events (SSE).
+-   `server_sse.py`: This is the updated and fully functional version of the challenge server. It includes support for SSE, which is required for the challenges to work correctly.
+
+When running the challenges, make sure you are using the `server_sse.py` files. The provided `run.sh` and `supervisord.conf` files are already configured to use the correct `server_sse.py` files.
+
 ## Disclaimer
 
 This project is for educational purposes only. The vulnerabilities demonstrated in this project should never be implemented in production systems. Always follow security best practices when implementing MCP servers.
@@ -119,5 +209,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Author
 
 This project is created by Harish Santhanalakshmi Ganesan using cursor IDE and Manus AI.
+
+- Modification for Google Cloud Run done by Prashanth Subrahmanyam using Gemini CLI.
 
 

@@ -1,0 +1,155 @@
+steps:
+# 1. Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/dvmcp', '-f', 'Dockerfile.cloudrun', '.']
+
+# 2. Push the Docker image to Google Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push'
+  args: ['push', 'gcr.io/$PROJECT_ID/dvmcp']
+
+# 3. Deploy each challenge to Cloud Run in parallel
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 1'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge1-prompt-injection'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge1'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 2'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge2-tool-poisoning'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge2'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 3'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge3-excessive-permissions'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge3'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 4'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge4-rug-pull-attack'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge4'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 5'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge5-tool-shadowing'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge5'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 6'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge6-indirect-prompt-injection'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge6'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 7'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge7-token-theft'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge7'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 8'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge8-malicious-code-execution'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge8'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 9'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge9-remote-access-control'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge9'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Deploy Challenge 10'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'dvmcp-challenge10-multi-vector-attack'
+    - '--image=gcr.io/$PROJECT_ID/dvmcp'
+    - '--args=challenge10'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+  waitFor: ['Push']
+
+# 4. Push the built image to the registry (this happens after the build step)
+images:
+- 'gcr.io/$PROJECT_ID/dvmcp:latest'

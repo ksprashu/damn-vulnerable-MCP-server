@@ -46,8 +46,9 @@ class SseCompatibleMcpServer:
     def run(self):
         """Run the server with uvicorn"""
         import uvicorn
+        port = int(os.environ.get("PORT", self.port))
         print(f"Starting {self.mcp.name} MCP Server")
         print("Connect to this server using an MCP client (e.g., Claude Desktop or Cursor)")
-        print(f"Server running at http://localhost:{self.port}")
-        print(f"SSE endpoint available at http://localhost:{self.port}/sse")
-        uvicorn.run(self.app, host="0.0.0.0", port=self.port)
+        print(f"Server running at http://localhost:{port}")
+        print(f"SSE endpoint available at http://localhost:{port}/sse")
+        uvicorn.run(self.app, host="0.0.0.0", port=port)
